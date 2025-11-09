@@ -1,0 +1,28 @@
+Classe JogadorControllerTest
+
+A classe utiliza um FakeJogadorDAO como BD falso para evitar o uso do banco real
+
+@BeforeAll para que que componentes TextFiel e TableView funcionem
+
+@BeforeEach para preparar novo ambiente a cada teste, pronto para testar sem usar janela de interface
+
+FakeJogadorDAO substitui o JogadorDAO real, vai armazenar os jogadores em uma List<>. Simular um BD
+
+Métodos restantes permitem acessar campos e métodos privados durante os testes
+
+Teste de Unidade 1:
+testeJogadorValido -> o usuário preenche os campos e adiciona um jogador, então as seguintes verificações ocorrem: o DAO deve conter 1 jogador cadastrado, o nome do jogador deve ser o nome que o usuário digitou
+
+Teste de Unidade 2:
+testCampoVazio -> o jogador preenche os campos e deixa o nome do jogador vazio, então ocorre a verificação se a lista do DAO esta vazia.
+
+Classe JogadorTest
+
+A classe é entidade Jogador
+
+Teste de Unidade 3:
+testeConstrutores -> verifica que o construtor atribui corretamente os valores atribuídos a ele
+
+Teste de Unidade 4:
+testeToString -> verifica se o método toString retorna o nome do jogador
+
