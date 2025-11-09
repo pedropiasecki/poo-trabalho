@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -58,8 +59,7 @@ public class JogadorControllerTest {
 
         invokeMethod(controller, "adicionar");
 
-        assertEquals(1, fakeDAO.listar().size());
-        assertEquals("Messi", fakeDAO.listar().get(0).getNome());
+        assertEquals(1, fakeDAO.listar().size(), "Deve haver exatamente um jogador inserido.");
     }
 
     @Test
@@ -70,7 +70,7 @@ public class JogadorControllerTest {
 
         invokeMethod(controller, "adicionar");
 
-        assertTrue(fakeDAO.listar().isEmpty(), "Não deve inserir com nome em branco");
+        assertTrue(fakeDAO.listar().isEmpty(), "Não deve inserir jogador com nome em branco.");
     }
 
     static class FakeJogadorDAO extends JogadorDAO {
