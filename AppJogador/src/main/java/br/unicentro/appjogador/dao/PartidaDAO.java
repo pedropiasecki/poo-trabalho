@@ -10,6 +10,7 @@ import java.util.List;
 
 public class PartidaDAO {
 
+    // metodo para inserir partida no banco de dados
     public void inserir(Partida p) {
         String sql = "INSERT INTO partida (data, adversario, local) VALUES (?, ?, ?)";
         try (Connection conn = Conexao.getConnection();
@@ -23,6 +24,7 @@ public class PartidaDAO {
         }
     }
 
+    // metodo para listar partidas
     public List<Partida> listar() {
         List<Partida> lista = new ArrayList<>();
         String sql = "SELECT * FROM partida ORDER BY data DESC";
@@ -44,6 +46,13 @@ public class PartidaDAO {
         return lista;
     }
 
+    // metodo que chama inserir com uma partida p
+    public void adicionarPartida(LocalDate data, String adversario, String local) {
+        Partida p = new Partida(data, adversario, local);
+        inserir(p);
+    }
+
+    // atualiza uma partida ja existente
     public void atualizar(Partida p) {
         String sql = "UPDATE partida SET data=?, adversario=?, local=? WHERE id=?";
         try (Connection conn = Conexao.getConnection();
@@ -58,6 +67,7 @@ public class PartidaDAO {
         }
     }
 
+    // deleta uma partida do banco de dados
     public void deletar(int id) {
         String sql = "DELETE FROM partida WHERE id=?";
         try (Connection conn = Conexao.getConnection();

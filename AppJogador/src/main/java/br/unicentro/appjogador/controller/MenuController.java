@@ -11,10 +11,12 @@ import java.io.IOException;
 
 public class MenuController {
 
+    // botões do menu
     @FXML private Button btnJogadores;
     @FXML private Button btnPartidas;
     @FXML private Button btnEstatisticas;
 
+    // funcionalidade dos botões
     @FXML
     private void abrirJogadores() {
         abrirTela("/br/unicentro/appjogador/view/jogador.fxml", "Jogadores");
@@ -35,6 +37,7 @@ public class MenuController {
         System.exit(0);
     }
 
+    // metodo para abrir telas do sistema
     private void abrirTela(String fxmlPath, String titulo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));

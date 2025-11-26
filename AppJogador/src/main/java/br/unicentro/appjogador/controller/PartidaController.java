@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 public class PartidaController {
 
+    // componentes da interface
     @FXML private DatePicker dataField;
     @FXML private TextField adversarioField;
     @FXML private TextField localField;
@@ -19,9 +20,13 @@ public class PartidaController {
     @FXML private TableColumn<Partida, String> colAdversario;
     @FXML private TableColumn<Partida, String> colLocal;
 
+    // obj DAO para acessar banco de dados
     private PartidaDAO partidaDAO = new PartidaDAO();
+
+    // lista para mostrar partidas
     private ObservableList<Partida> dados = FXCollections.observableArrayList();
 
+    // inicializa o controller
     @FXML
     public void initialize() {
         colData.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getData()));
@@ -39,14 +44,20 @@ public class PartidaController {
         });
     }
 
+    /*
+    3ª Refatoração
+    Autor(a): Pedro
+    Uso de Move Method no metodo adicionar, levado para PartidaDAO e sendo chamada por a mesma
+    Objetivo: melhorar estrutura do código */
     @FXML
     private void adicionar() {
-        Partida p = new Partida(dataField.getValue(), adversarioField.getText(), localField.getText());
-        partidaDAO.inserir(p);
+        partidaDAO.adicionarPartida(dataField.getValue(), adversarioField.getText(), localField.getText());
         atualizarTabela();
         limparCampos();
     }
 
+
+    // atualiza o banco de dados
     @FXML
     private void atualizar() {
         Partida selecionado = tabelaPartidas.getSelectionModel().getSelectedItem();
@@ -59,6 +70,7 @@ public class PartidaController {
         }
     }
 
+    // exclui partida do banco de dados
     @FXML
     private void excluir() {
         Partida selecionado = tabelaPartidas.getSelectionModel().getSelectedItem();
@@ -69,11 +81,13 @@ public class PartidaController {
         }
     }
 
+    // atualiza tabela de visualizacao
     private void atualizarTabela() {
         dados.setAll(partidaDAO.listar());
         tabelaPartidas.setItems(dados);
     }
 
+    // limpa campos de digitação
     private void limparCampos() {
         dataField.setValue(null);
         adversarioField.clear();

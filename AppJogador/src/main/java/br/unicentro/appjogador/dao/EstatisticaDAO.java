@@ -6,14 +6,16 @@ import br.unicentro.appjogador.model.Jogador;
 import br.unicentro.appjogador.model.Partida;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EstatisticaDAO {
+
+    // usado para acessar entidades
     private JogadorDAO jogadorDAO = new JogadorDAO();
     private PartidaDAO partidaDAO = new PartidaDAO();
 
+    // metodo para inserir nova estatistica ao banco de dados
     public void inserir(Estatistica e) {
         String sql = "INSERT INTO estatistica (jogador_id, partida_id, gols, assistencias) VALUES (?, ?, ?, ?)";
         try (Connection conn = Conexao.getConnection();
@@ -28,43 +30,30 @@ public class EstatisticaDAO {
         }
     }
 
+    // lista estatisticas e informações de partida e jogador
     public List<Estatistica> listar() {
         List<Estatistica> lista = new ArrayList<>();
         String sql = """
-            SELECT e.id, e.gols, e.assistencias,
-                   j.id AS jogador_id, j.nome AS jogador_nome, j.posicao, j.idade,
-                   p.id AS partida_id, p.data, p.adversario, p.local
-            FROM estatistica e
-            JOIN jogador j ON e.jogador_id = j.id
-            JOIN partida p ON e.partida_id = p.id
-            ORDER BY p.data DESC;
-        """;
+                SELECT e.id, e.gols, e.assistencias,
+                       j.id AS jogador_id, j.nome AS jogador_nome, j.posicao, j.idade,
+                       p.id AS partida_id, p.data, p.adversario, p.local
+                FROM estatistica e
+                JOIN jogador j ON e.jogador_id = j.id
+                JOIN partida p ON e.partida_id = p.id
+                ORDER BY p.data DESC;
+                """;
 
         try (Connection conn = Conexao.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
+            /*
+            4ª Refatoração
+            Autor(a): Pedro
+            Uso de Extract Method para tornar resulSet como objeto
+            Objetivo: melhorar estrutura do código e mais legível */
             while (rs.next()) {
-                Jogador j = new Jogador(
-                        rs.getInt("jogador_id"),
-                        rs.getString("jogador_nome"),
-                        rs.getString("posicao"),
-                        rs.getInt("idade")
-                );
-                Partida p = new Partida(
-                        rs.getInt("partida_id"),
-                        rs.getDate("data").toLocalDate(),
-                        rs.getString("adversario"),
-                        rs.getString("local")
-                );
-                Estatistica e = new Estatistica(
-                        rs.getInt("id"),
-                        j,
-                        p,
-                        rs.getInt("gols"),
-                        rs.getInt("assistencias")
-                );
-                lista.add(e);
+                lista.add(mapearEstatistica(rs));
             }
 
         } catch (SQLException e) {
@@ -73,6 +62,7 @@ public class EstatisticaDAO {
         return lista;
     }
 
+    // atualiza uma estatistica no banco de dados
     public void atualizar(Estatistica e) {
         String sql = "UPDATE estatistica SET jogador_id=?, partida_id=?, gols=?, assistencias=? WHERE id=?";
         try (Connection conn = Conexao.getConnection();
@@ -88,6 +78,7 @@ public class EstatisticaDAO {
         }
     }
 
+    // deleta uma estatistica no banco de dados
     public void deletar(int id) {
         String sql = "DELETE FROM estatistica WHERE id=?";
         try (Connection conn = Conexao.getConnection();
@@ -97,5 +88,36 @@ public class EstatisticaDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+
+    // métodos usados para mapeamento usado no listar()
+    // usado para usar ResulSet como objetos
+    private Jogador mapearJogador(ResultSet rs) throws SQLException {
+        return new Jogador(
+                rs.getInt("jogador_id"),
+                rs.getString("jogador_nome"),
+                rs.getString("posicao"),
+                rs.getInt("idade")
+        );
+    }
+
+    private Partida mapearPartida(ResultSet rs) throws SQLException {
+        return new Partida(
+                rs.getInt("partida_id"),
+                rs.getDate("data").toLocalDate(),
+                rs.getString("adversario"),
+                rs.getString("local")
+        );
+    }
+
+    private Estatistica mapearEstatistica(ResultSet rs) throws SQLException {
+        return new Estatistica(
+                rs.getInt("id"),
+                mapearJogador(rs),
+                mapearPartida(rs),
+                rs.getInt("gols"),
+                rs.getInt("assistencias")
+        );
     }
 }

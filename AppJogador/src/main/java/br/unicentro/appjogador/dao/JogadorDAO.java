@@ -8,6 +8,7 @@ import java.util.List;
 
 public class JogadorDAO {
 
+    // metodo para inserir jogador ao banco de dados
     public void inserir(Jogador j) {
         String sql = "INSERT INTO jogador (nome, posicao, idade) VALUES (?, ?, ?)";
         try (Connection conn = Conexao.getConnection();
@@ -21,6 +22,7 @@ public class JogadorDAO {
         }
     }
 
+    // metodo para listar jogadores presentes no banco de dados
     public List<Jogador> listar() {
         List<Jogador> lista = new ArrayList<>();
         String sql = "SELECT * FROM jogador ORDER BY id";
@@ -42,6 +44,7 @@ public class JogadorDAO {
         return lista;
     }
 
+    // metodo para atualizar jogador existente no banco de dados
     public void atualizar(Jogador j) {
         String sql = "UPDATE jogador SET nome=?, posicao=?, idade=? WHERE id=?";
         try (Connection conn = Conexao.getConnection();
@@ -56,6 +59,7 @@ public class JogadorDAO {
         }
     }
 
+    // metodo para deletar jogador do banco de dados
     public void deletar(int id) {
         String sql = "DELETE FROM jogador WHERE id=?";
         try (Connection conn = Conexao.getConnection();
